@@ -1,4 +1,4 @@
 ComicCloud
 ==========
 
-A system for manage and reading Comic Book Archives in the cloud.
+A system for managing and reading Comic Book Archives in the cloud.
