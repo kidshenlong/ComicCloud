@@ -1,3 +1,3 @@
 #To-do List
 
-- [ ] Write Uploader Function
+- [x] Write Uploader Function
