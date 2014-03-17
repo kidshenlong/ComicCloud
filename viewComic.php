@@ -20,28 +20,37 @@ foreach (scandir($comicDirectory) as $file){
 $filesArray = json_encode($rawFilesArray);
 $script = '
 <script type="text/javascript">
+	var currentPage = 0;
+	var currentlyLoaded = 0;
+	var totalPages = $("#comicFrame").children().length;
 	var imageArray='.$filesArray.'
 	$( document ).ready(function() {
 		loadImage(8);
 		$("#ajaxLoader").show();
 		$(".comicPage").first().show();
 		$("body").css("overflow","hidden");
+		$("#comicFrame").click(function(){
+
+            $("#comicFrame").children().eq(currentPage).hide();
+            currentPage++;
+            if(currentPage + 1 > currentlyLoaded-4){
+                loadImage(8);
+            }
+            $("#comicFrame").children().eq(currentPage).show();
+
+		});
 	});
 	$(window).load(function() {
     	$("#ajaxLoader").hide();
     	$("body").css("overflow","inherit");
 	});
 	function loadImage(imgNo){
-		/*for (var i = 0; i < imgNo; i++) {
-			$(".comicPage")[i].attr("src",$(".comicPage")[i].data("src"));
-		}*/
+	    currentlyLoaded = currentlyLoaded + imgNo;
+
 		$(".comicPage").each(function(index, item){
-			//$(item).css("z-index", $(".comicPage").length - index);
-			if(index < imgNo){
+			if(index < currentlyLoaded ){
 				$(item).attr("src", $(item).data("src"));
 				//$(item).css("display","inherit");
-			}else{
-				//return false;
 			}
 		});
 	}
