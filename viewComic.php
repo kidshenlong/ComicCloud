@@ -22,22 +22,16 @@ $script = '
 <script type="text/javascript">
 	var currentPage = 0;
 	var currentlyLoaded = 0;
-	var totalPages = $("#comicFrame").children().length;
+	var totalPages;
 	var imageArray='.$filesArray.'
 	$( document ).ready(function() {
+	    totalPages = $("#comicFrame").children().length;
 		loadImage(8);
 		$("#ajaxLoader").show();
 		$(".comicPage").first().show();
 		$("body").css("overflow","hidden");
 		$("#comicFrame").click(function(){
-
-            $("#comicFrame").children().eq(currentPage).hide();
-            currentPage++;
-            if(currentPage + 1 > currentlyLoaded-4){
-                loadImage(8);
-            }
-            $("#comicFrame").children().eq(currentPage).show();
-
+            changePage("next");
 		});
 	});
 	$(window).load(function() {
@@ -53,6 +47,27 @@ $script = '
 				//$(item).css("display","inherit");
 			}
 		});
+	}
+	function changePage(action){
+        switch(action){
+            case "next":
+                if(currentPage+1 < totalPages){
+                    $("#comicFrame").children().eq(currentPage).hide();
+                    currentPage++;
+                    if(currentPage + 1 > currentlyLoaded-4){
+                        loadImage(8);
+                    }
+                    $("#comicFrame").children().eq(currentPage).show();
+                }
+               break;
+            case "previous":
+                if(currentPage-1 >= 0){
+                    $("#comicFrame").children().eq(currentPage).hide();
+                    currentPage--;
+                    $("#comicFrame").children().eq(currentPage).show();
+                }
+            break;
+        }
 	}
 
 </script>

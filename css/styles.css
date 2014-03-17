@@ -145,6 +145,9 @@ input {
 	#header{
 		margin-bottom:20px;
 	}
+    .comicPage{
+        width:100%;
+    }
 
 }
 
