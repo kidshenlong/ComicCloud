@@ -38,10 +38,10 @@ a{
 }
 #ajaxLoader{
 	background-color: rgba(0,0,0,0.7);
-	background-image: url('../img/ajax-loader.gif');
+	background-image: url('../public_html/img/ajax-loader.gif');
 }
 #ajaxLoader2{
-	background-image: url('../img/ajax-loader-2.gif');
+	background-image: url('../public_html/img/ajax-loader-2.gif');
 }
 #header a:hover, #header a:active{
 	/*color:black;

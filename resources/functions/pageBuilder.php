@@ -24,7 +24,7 @@
 	function createMenu(){
 		$menu = " 
 			<div id='header'>
-				<div id='nameplate'><a href='./'>Comic Cloud</a></div>
+				<div id='nameplate'><a href=''>Comic Cloud</a></div>
 				<div id='menu'>
 					<ul>
 						<li><form id='searchForm' action='search.php'><input name='searchQuery' id='searchField' placeholder='Search Comic Title' type='search'></form></li>

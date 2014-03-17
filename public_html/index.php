@@ -1,5 +1,5 @@
 <?php
-require ('include.php');
+require('include.php');
 
 $script = '
 <script src="js/jquery.masonry.min.js"></script>
