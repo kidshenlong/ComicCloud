@@ -1,6 +1,6 @@
 <?php
 	include_once '/home/kidshenlong/Private/login.php';
-	$db = db_con('pdo','comichome');
+	$db = db_con('pdo','comiccloud');
 
 	function searchDB($search,$offset = 0){
 

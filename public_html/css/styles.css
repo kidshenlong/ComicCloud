@@ -7,8 +7,8 @@ body{
 	font-family:'Roboto',sans-serif;
 	/*background:#F4F4F4;*/
 	background:#F5F5F5;
-	padding:0px;
-	margin:0px;
+	padding:0;
+	margin:0;
 	color:#333;
 }
 h1{
@@ -38,10 +38,10 @@ a{
 }
 #ajaxLoader{
 	background-color: rgba(0,0,0,0.7);
-	background-image: url('../public_html/img/ajax-loader.gif');
+	background-image: url('../img/ajax-loader.gif');
 }
 #ajaxLoader2{
-	background-image: url('../public_html/img/ajax-loader-2.gif');
+	background-image: url('../img/ajax-loader-2.gif');
 }
 #header a:hover, #header a:active{
 	/*color:black;
@@ -66,11 +66,10 @@ a{
 	font-size:28px;
 }
 #menu ul{
-	padding:0px;
-	margin:0px;
+	padding:0;
+	margin:0;
 }
 #menu ul li{
-	display:inline-block;
 	/*IE 7 and below fix */
 	zoom: 1;
 	display: inline;
@@ -175,7 +174,7 @@ input {
 	#header{
 		display:block;
 		position:fixed;
-		top:0px;
+		top:0;
 	}
 	#menu{
 		/*float:right;*/ text-align:right;
@@ -187,7 +186,7 @@ input {
 	#nameplate{
 		display:inline-block;
 		width:360px;
-		margin:0px;
+		margin:0;
 		margin-left:50px;
 		padding:5px;
 	}
