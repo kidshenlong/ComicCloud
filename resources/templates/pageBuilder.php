@@ -16,7 +16,10 @@
 					$script.
 					"<meta name='viewport' content='initial-scale=1, maximum-scale=1'>
 				</head>
-				<body>";
+				<body>
+				    <div id='ajaxLoader'></div>
+                    <div id='ajaxLoader2'></div>
+				    ";
 
 		return $header;
 	}
