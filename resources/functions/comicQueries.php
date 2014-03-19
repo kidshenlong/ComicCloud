@@ -56,7 +56,7 @@
 
 
 	}
-
+    //Ajax switch??
 	if(isset($_POST['action']) && !empty($_POST['action'])){
 		switch ($_POST['action']) {
 			case "searchResults":

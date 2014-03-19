@@ -1,9 +1,9 @@
 <?php
-require('include.php');
+    require('include.php');
 
-echo createHeader('Home');
+    $home = new Page();
 
-echo createMenu();
+    echo $home->documentHead('Home');
+    echo $home->pageHead();
 
-echo "<div id='content'></div>";
-		
+    echo "<div id='content'></div>";

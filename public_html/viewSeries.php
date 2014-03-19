@@ -1,23 +1,16 @@
 <?php
 require('include.php');
 
-echo createHeader('');
 
-echo createMenu();
+    $viewSeries = new Page();
+    $seriesArray = $viewSeries->getComicSeries($_GET['id'],0,true);
+    $title = $seriesArray['seriesName']." (".$seriesArray['seriesStartYear'].")";
+    echo $viewSeries->documentHead($title);
+    echo $viewSeries->pageHead();
 
-$comicArray = json_decode(returnComicSeries(simpleSanitise($_GET['id'])),true);
 
-if($comicArray!='No results'){
-	foreach($comicArray as $element) {
-		$comicResults .= "<a data-comicid='".$element['id']."' class='comicPreview' href='viewComic.php?id=".$element['id']."'><div class='block card'><img src='".$element['coverimg']."'/><p> #".$element['issue']."</p></div></a>";
+    echo "<div id='content'>";
 
-	}
-}else{
-	
-	$comicResults .= "<p id='noResults'>No Results Found</p>";
-}
+    echo $viewSeries->getComicSeries($_GET['id']);
 
-echo "<div id='ajaxLoader'></div>";
-echo "<div id='content'>";
-echo $comicResults;
-echo "</div>";
+    echo "</div>";

@@ -1,24 +1,14 @@
 <?php
-require('include.php');
+    require('include.php');
 
-echo createHeader('');
+    $search = new Page();
 
-echo createMenu();
+    echo $search->documentHead("Search results for '".simpleSanitise($_GET['searchQuery'])."'");
+    echo $search->pageHead();
 
 
+    echo "<div id='content'>";
 
-$comicArray = json_decode(searchDB(simpleSanitise($_GET['searchQuery']),$offset = 0),true);
+    echo $search->getSearchResults($_GET['searchQuery']);
 
-if($comicArray){
-	foreach($comicArray as $element) {
-		$comicResults .= "<a data-seriesid='".$element['id']."' class='seriesPreview' href='viewSeries.php?id=".$element['id']."'><div class='block card'><img src='".$element['seriesCover']."'/><p>".$element['seriesName']." (".$element['seriesStartYear'].")</p></div></a>";
-	}
-}else{
-	
-	$comicResults .= "<p id='noResults'>No Results Found</p>";
-}
-
-echo "<div id='ajaxLoader'></div>";
-echo "<div id='content'>";
-echo $comicResults;
-echo "</div>";		
+    echo "</div>";
