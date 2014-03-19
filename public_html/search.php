@@ -9,7 +9,7 @@ echo createMenu();
 
 $comicArray = json_decode(searchDB(simpleSanitise($_GET['searchQuery']),$offset = 0),true);
 
-if($comicArray!='No results'){
+if($comicArray){
 	foreach($comicArray as $element) {
 		$comicResults .= "<a data-seriesid='".$element['id']."' class='seriesPreview' href='viewSeries.php?id=".$element['id']."'><div class='block card'><img src='".$element['seriesCover']."'/><p>".$element['seriesName']." (".$element['seriesStartYear'].")</p></div></a>";
 	}

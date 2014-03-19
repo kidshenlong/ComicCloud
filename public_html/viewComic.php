@@ -1,89 +1,48 @@
 <?php
+
 require('include.php');
-
-
-
-$comicArray = json_decode(returnComic(simpleSanitise($_GET['id'])),true);
-
-$comicDirectory = "../comics/".$comicArray['uploadlocation'];
-//$rawFilesArray = array_diff(scandir($comicDirectory), array('..', '.','ComicInfo.xml'));
 
 $rawFilesArray = array();
 
-foreach (scandir($comicDirectory) as $file){
-	$file = $comicDirectory."/".$file;
-	if(is_file($file) && $file!= $comicDirectory."/ComicInfo.xml"){
-		$rawFilesArray[] = $file;
-	}
+$comicArray = json_decode(returnComic(simpleSanitise($_GET['id'])),true);
+if($comicArray){
+    $comicDirectory = "../comics/extracts/".$comicArray['uploadlocation'];
+    if(is_dir($comicDirectory)){
+        $content = "<div id='comicFrame' style='height:1000px;'>";
+
+        foreach (scandir($comicDirectory) as $file){
+            $file = $comicDirectory."/".$file;
+            if(is_file($file) && $file!= $comicDirectory."/ComicInfo.xml"){
+                $rawFilesArray[] = $file;
+            }
+        }
+
+        /*foreach($rawFilesArray as $img){
+            $content .=  "<img class='comicPage' style='display:none; margin:auto; position:absolute; top:0; bottom:0; right:0; left:0;' data-src='$img'/>";
+        }*/
+        $content .= "</div>";
+
+    }else{
+        $content = "<p id='noResults'>No Comic Found</p>";
+    }
+}else{
+
+   $content = "<p id='noResults'>No Comic Found</p>";
 }
 
+
+
+
+
+
 $filesArray = json_encode($rawFilesArray);
-$script = '
-<script type="text/javascript">
-	var currentPage = 0;
-	var currentlyLoaded = 0;
-	var totalPages;
-	var imageArray='.$filesArray.'
-	$( document ).ready(function() {
-	    totalPages = $("#comicFrame").children().length;
-		loadImage(8);
-		$("#ajaxLoader").show();
-		$(".comicPage").first().show();
-		$("body").css("overflow","hidden");
-		$("#comicFrame").click(function(){
-            changePage("next");
-		});
-	});
-	$(window).load(function() {
-    	$("#ajaxLoader").hide();
-    	$("body").css("overflow","inherit");
-	});
-	function loadImage(imgNo){
-	    currentlyLoaded = currentlyLoaded + imgNo;
-
-		$(".comicPage").each(function(index, item){
-			if(index < currentlyLoaded ){
-				$(item).attr("src", $(item).data("src"));
-				//$(item).css("display","inherit");
-			}
-		});
-	}
-	function changePage(action){
-        switch(action){
-            case "next":
-                if(currentPage+1 < totalPages){
-                    $("#comicFrame").children().eq(currentPage).hide();
-                    currentPage++;
-                    if(currentPage + 1 > currentlyLoaded-4){
-                        loadImage(8);
-                    }
-                    $("#comicFrame").children().eq(currentPage).show();
-                }
-               break;
-            case "previous":
-                if(currentPage-1 >= 0){
-                    $("#comicFrame").children().eq(currentPage).hide();
-                    currentPage--;
-                    $("#comicFrame").children().eq(currentPage).show();
-                }
-            break;
-        }
-	}
-
-</script>
-';
+$script = "<script type='text/javascript'> var imageArray=".$filesArray."; console.log(imageArray);</script>";
+$script .= "<script type='text/javascript' src='js/reader.js'></script>";
 
 echo createHeader('Comic', $script);
 
 echo createMenu();
 
-echo "<div id='ajaxLoader'></div>";
-echo "<div id='ajaxLoader2'></div>";
 echo "<div id='content'>";
-echo "<div id='comicFrame' style='height:1000px;'>";
-foreach($rawFilesArray as $img){
-	echo "<img class='comicPage' style='display:none; margin:auto; position:absolute; top:0; bottom:0; right:0; left:0;' data-src='$img'/>";
-}
-echo "</div>";
-//echo "<img class='comicPage' src='../comichome/".$dir."/".$files1[2]."'/>";
+echo $content;
 echo "</div>";

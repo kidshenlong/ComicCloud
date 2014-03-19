@@ -19,7 +19,8 @@
 				return json_encode($result);  
 			} else {
 				//return "No results returned.";
-				return json_encode('No results');
+				//return json_encode('No results');
+                return false;
 			}
 			  
 		} catch(PDOException $e) {
@@ -38,13 +39,14 @@
 			$stmt = $db->prepare("SELECT * FROM comics WHERE seriesID = :value ORDER BY issue DESC");
 			$stmt->execute(array(':value' => $seriesID));
 
-			$result = $stmt->fetchAll();
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-			if (count($result) ) { 
+			if (!empty($result)){
 				return json_encode($result);  
 			} else {
-				//return "No results returned.";
-				return json_encode('No results');
+				//return "No results";
+				//return json_encode('No results');
+                return false;
 			}
 			  
 		} catch(PDOException $e) {
@@ -75,13 +77,14 @@
 			$stmt->execute(array(':value' => $comicID));
 
 			//$result = $stmt->fetchAll();
-			$result = $stmt->fetch();
+			$result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-			if (count($result) ) { 
-				return json_encode($result);  
+			if (!empty($result)){
+				return json_encode($result);
 			} else {
-				//return "No results returned.";
-				return json_encode('No results');
+				//return "No results";
+				//return json_encode('No results');
+                return false;
 			}
 			  
 		} catch(PDOException $e) {

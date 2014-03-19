@@ -2,6 +2,6 @@
 
 - [ ] Write Uploader Function
 - [ ] Comic Navigation
-- [ ] Pretty URLs
+- [ ] Pretty URLs (htaccess/history.js)
 - [ ] Seperate JS into files
 - [ ] Mobile CSS

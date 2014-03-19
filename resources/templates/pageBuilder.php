@@ -11,6 +11,7 @@
 					<link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css' />
 					<script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js'></script>
 					<script src='http://browserstate.github.io/history.js/scripts/bundled/html4+html5/jquery.history.js'></script>
+					<script src='js/imagesloaded.pkgd.min.js'></script>
 					<script src='js/main.js'></script>
 					<script src='js/functions.js'></script>".
 					$script.
