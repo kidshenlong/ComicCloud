@@ -62,6 +62,9 @@ function changePage(action){
                         console.log('imagesLoaded again');
                         loadingImages = false;
                         $("#ajaxLoader").hide();
+                    }).progress( function( instance, image ) {
+                        var result = image.isLoaded ? 'loaded' : 'broken';
+                        console.log( 'image is ' + result + ' for ' + image.img.src );
                     });
                 }
                 $("#comicFrame").children().eq(currentPage).show();
