@@ -100,19 +100,23 @@
 
         class ComicViewer extends Page{
 
-            public function getComic($comicID){
+            public function getComic($comicID,$asArray = false){
 
                 global $db;
                 $comicID = simpleSanitise($comicID);
                 try {
 
-                    $stmt = $db->prepare("SELECT * FROM uploads WHERE id = :value");
+                    //$stmt = $db->prepare("SELECT * FROM uploads WHERE id = :value");
+                    $stmt = $db->prepare("SELECT a.*,b.issue,c.seriesName,c.seriesStartYear FROM uploads AS a INNER JOIN comics AS b ON a.id=b.locationid INNER JOIN comicSeries AS c ON b.seriesID=c.id WHERE a.id = :value");
                     $stmt->execute(array(':value' => $comicID));
 
                     //$result = $stmt->fetchAll();
                     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     if (!empty($result)){
+                        if($asArray == true){
+                            return $result;
+                        }
                         $comicDirectory = "../comics/extracts/".$result['uploadlocation'];
                         if(is_dir($comicDirectory)){
                             $rawFilesArray = array();
