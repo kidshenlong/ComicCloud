@@ -97,3 +97,43 @@
                 }
             }
         }
+
+        class ComicViewer extends Page{
+
+            public function getComic($comicID){
+
+                global $db;
+                $comicID = simpleSanitise($comicID);
+                try {
+
+                    $stmt = $db->prepare("SELECT * FROM uploads WHERE id = :value");
+                    $stmt->execute(array(':value' => $comicID));
+
+                    //$result = $stmt->fetchAll();
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    if (!empty($result)){
+                        $comicDirectory = "../comics/extracts/".$result['uploadlocation'];
+                        if(is_dir($comicDirectory)){
+                            $rawFilesArray = array();
+                            foreach (scandir($comicDirectory) as $file){
+                                $file = $comicDirectory."/".$file;
+                                if(is_file($file) && $file!= $comicDirectory."/ComicInfo.xml"){
+                                    $rawFilesArray[] = $file;
+                                }
+                            }
+                            return $rawFilesArray;
+                        }else{
+                            return $comicResults = "<p id='noResults'>No Comic Found</p>";
+                        }
+                    } else {
+                        return $comicResults = "<p id='noResults'>No Comic Found</p>";
+                    }
+
+                } catch(PDOException $e) {
+                    return 'ERROR: ' . $e->getMessage();
+                }
+            }
+        }
+
+
