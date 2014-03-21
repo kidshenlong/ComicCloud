@@ -7,3 +7,4 @@
 - [ ] Mobile CSS
 - [ ] Sort config file (directories, db stuff)
 - [ ] Classes. Classes everywhere!
+- [ ] Minimal UI within comic reader. 
