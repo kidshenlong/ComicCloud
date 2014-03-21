@@ -7,8 +7,11 @@ var totalPages;
 var loadingImages = true;
 
 $( document ).ready(function() {
+    $("#content").addClass('comicMode');
     totalPages = imageArray.length;//$("#comicFrame").children().length;
     loadImage(8);
+    $( "body" ).animate({backgroundColor:"#000000"},1000);
+
     $("#ajaxLoader").show();
     $("body").css("overflow","hidden");
 
@@ -39,7 +42,7 @@ function loadImage(imgNo){
 
     for( var i = currentlyLoaded; i < currentlyLoaded + imgNo; i++){
         if(i < totalPages){
-            $("<img class='comicPage' style='display:none; margin:auto; position:absolute; top:0; bottom:0; right:0; left:0;' src='" + imageArray[i] + "'/>").appendTo('#comicFrame');
+            $("<img class='comicPage' style='display:none;' src='" + imageArray[i] + "'/>").appendTo('#comicFrame');
         }else{
             return;
         }
@@ -54,7 +57,11 @@ function changePage(action){
     switch(action){
         case "next":
             if(currentPage+1 < totalPages){
-                $("#comicFrame").children().eq(currentPage).hide();
+                $('body').css({'overflow':'hidden'});
+                $("#comicFrame").children('.comicPage').eq(currentPage).hide();
+                $('body').css({'overflow':'inherit'});
+                window.scrollTo(0,0);
+
                 currentPage++;
                 if(currentPage + 1 == currentlyLoaded-4){
                     loadImage(8);
@@ -67,7 +74,9 @@ function changePage(action){
                         console.log( 'image is ' + result + ' for ' + image.img.src );
                     });
                 }
-                $("#comicFrame").children().eq(currentPage).show();
+                $("#comicFrame").children('.comicPage').eq(currentPage).show();
+
+
             }
             break;
         case "previous":

@@ -119,17 +119,17 @@ input {
 #noResults{
 	text-align:center;
 }
-#issuePane{
-	background:#F5F5F5;
-	width:700px;
-	height:400px;
-	margin:auto;
-	position:absolute;
-	top:0;
-	right:0;
-	left:0;
-	bottom:0
+
+#content.comicMode{
+    margin:0;
+    padding:0;
+    height:100%;
 }
+
+#comicFrame{
+    height:100%;
+}
+
 
 @media (max-width: 799px) { /* Mobile */
 
@@ -145,7 +145,14 @@ input {
 		margin-bottom:20px;
 	}
     .comicPage{
-        width:100%;
+        width:89%;
+        vertical-align: middle;
+        margin: 0 5%;
+    }
+    #spaceHelper{
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
     }
 
 }
@@ -154,6 +161,7 @@ input {
 	.block{
 		width:98%;
 	}
+
 }
 @media (min-width: 500px){
 	.block{
@@ -193,19 +201,23 @@ input {
 	.block{
 		width:31.1%;
 	}
+
+    .comicPage{
+        /*width:90%;*/
+        display:block;
+        margin-left:auto;
+        margin-right:auto;
+        width:auto;
+        height:100%;
+        /*max-height:1000px;*/
+    }
+    #spaceHelper{
+        display: none;
+    }
 }
 @media (min-width: 1200px) {
 	.block{
 		width:22.8%;
 
-	}
-	.comicPage{
-		/*width:90%;*/
-		display:block;
-		margin-left:auto;
-		margin-right:auto;
-		width:auto;
-		height:100%;
-		max-height:1000px;
 	}
 }

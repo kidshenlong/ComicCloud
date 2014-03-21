@@ -7,9 +7,10 @@
     $script = $title = '';
 
     if(is_array($comicReturn)){
+        //$script = "<meta name='viewport' content='minimal-ui'>";
         $script = "<script type='text/javascript'> var imageArray=".json_encode($comicReturn)."; console.log(imageArray);</script>";
         $script .= "<script type='text/javascript' src='js/reader.js'></script>";
-        $content = "<div id='comicFrame' style='height:1000px;'></div>";
+        $content = "<div id='comicFrame'><span id='spaceHelper'></span></div>";
         $comicArray = $viewComic->getComic($_GET['id'],true);
         $title = $comicArray['seriesName']." (".$comicArray['seriesStartYear'].") - #".$comicArray['issue'];
     }else{
@@ -18,5 +19,5 @@
     }
 
     echo $viewComic->documentHead($title,$script);
-    echo $viewComic->pageHead();
+    //echo $viewComic->pageHead();
     echo "<div id='content'>$content</div>";
