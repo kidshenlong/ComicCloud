@@ -121,13 +121,30 @@ input {
 }
 
 #content.comicMode{
-    margin:0;
+    margin:0 auto;
     padding:0;
     height:100%;
 }
 
 #comicFrame{
     height:100%;
+}
+
+#comicMenu{
+    display:none;
+    background:#3a3a3a;
+    opacity: 0.7;
+    border-radius:15px;
+    
+    width: 80%;
+    max-width:600px;
+    height: 100px;
+    
+    position: fixed;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 
 
