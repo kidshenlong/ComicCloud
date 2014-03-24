@@ -9,3 +9,4 @@
 - [ ] Classes. Classes everywhere!
 - [ ] Minimal UI within comic reader. 
 - [ ] Possibly switch over to a nice (micro) framework
+- [ ] Last page options
