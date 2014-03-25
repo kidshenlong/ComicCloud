@@ -10,3 +10,5 @@
 - [ ] Minimal UI within comic reader. 
 - [ ] Possibly switch over to a nice (micro) framework
 - [ ] Last page options
+- [ ] Optimise resize script. Should probably run in the background and become available for the user when complete.
+- [ ]

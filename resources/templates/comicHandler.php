@@ -6,6 +6,8 @@
  * Time: 12:08
  */
 
+ini_set('max_execution_time', 300);
+
 /*class Unpack {
 
     public $destination = "../uploads/";
@@ -99,10 +101,7 @@ function extractComic($file){
 
                                 $entry->extract($comicextractpath);
                                 $fullPath = $comicextractpath."/".$entry->getName();
-                                //$outFile = "test-cropped.jpg";
-                                $image = new Imagick($fullPath);
-                                $image->cropImage(400,400, 30,10);
-                                $image->writeImage($fullPath);
+
 
 
                             }
