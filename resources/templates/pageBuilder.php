@@ -52,7 +52,9 @@
                 global $db;
                 $search = simpleSanitise($search);
                 try {
-                    $stmt = $db->prepare("SELECT * FROM comicSeries WHERE seriesName LIKE :value LIMIT 16 OFFSET :offsetValue");
+                    //$stmt = $db->prepare("SELECT * FROM comicSeries WHERE seriesName LIKE :value LIMIT 16 OFFSET :offsetValue");
+                    $stmt = $db->prepare("SELECT comic_series, comic_start_year, comic_cover_image FROM comicsInfo WHERE comic_series LIKE :value GROUP BY comic_series, comic_start_year ORDER BY comic_issue LIMIT 16 OFFSET :offsetValue");
+
                     $stmt->bindValue(':value', "%".$search."%");
                     $stmt->bindValue(':offsetValue',intval($offset),PDO::PARAM_INT);
                     $stmt->execute();
@@ -60,7 +62,7 @@
                     if (!empty($result) ) {
                         $comicResults = '';
                         foreach($result as $element) {
-                            $comicResults .= "<a data-seriesid='".$element['id']."' class='seriesPreview' href='viewSeries.php?id=".$element['id']."'><div class='block card'><img src='".$element['seriesCover']."'/><p>".$element['seriesName']." (".$element['seriesStartYear'].")</p></div></a>";
+                            $comicResults .= "<a data-series='".urlencode($element['comic_series'])."' class='seriesPreview' href='viewSeries.php?series=".urlencode($element['comic_series'])."'><div class='block card'><img src='../comics/extracts/".$element['comic_cover_image']."'/><p>".htmlspecialchars($element['comic_series'])." (".htmlspecialchars($element['comic_start_year']).")</p></div></a>";
                         }
                         return $comicResults;
                     } else {

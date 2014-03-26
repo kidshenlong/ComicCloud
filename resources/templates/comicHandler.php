@@ -97,16 +97,20 @@ function extractComic($file){
                             $entries = rar_list($x);
 
 
-                            foreach ($entries as $entry) {
+                            foreach ($entries as $key=>$entry) {
 
                                 $entry->extract($comicextractpath);
                                 $fullPath = $comicextractpath."/".$entry->getName();
-
+                                if($key==0){
+                                    $coverImage = $randPath."/".$entry->getName();
+                                }
 
 
                             }
 
                             rar_close($x);
+
+                            exec("php -f ../comicResizer.php path=$randPath > /dev/null 2>/dev/null &");
 
                         }catch(Exception $e){
                             $progressLog['Fail'] = "Rar Extraction Failed";
@@ -136,15 +140,13 @@ function extractComic($file){
         try {
             //$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            $stmt = $db->prepare('INSERT INTO uploads VALUES(null,:user,:filename,:loc,FALSE)');
+            $stmt = $db->prepare('INSERT INTO comics VALUES(null,:user,:loc,FALSE)');
             $stmt->execute(array(
-                ':user' => '1',
-                ':filename' => $fileName,
-                ':loc' => $randPath//$comicextractpath
+                ':user' => $userid,
+                ':loc' => $randPath
             ));
 
             $ID = $db->lastInsertId();
-            //rename("$file", "$rawarchive_path/".$ID.".".$fileTypeFromFile);
 
             $titlePreg = ' Vol.[0-9]+| #[0-9]+|\(.*?\)|\.[a-z0-9A-Z]+$';
             $comicTitle = preg_replace('/'.$titlePreg.'/', "", $fileName);
@@ -154,13 +156,14 @@ function extractComic($file){
             $issueNo = str_replace('#', '',$output_array[0]);
             $issueNo = ltrim($issueNo, '0');
 
-            return json_encode(array('id'=>$ID,'title'=>$comicTitle,'issueNo'=>$issueNo));
+            $stmt = $db->prepare('INSERT INTO comicsInfo VALUES(:id,:title,:issue,NULL,:cover_image)');
+            $stmt->execute(array(
+                ':id' => $ID,
+                ':title' => $comicTitle,
+                ':issue' => $issueNo,
+                ':cover_image' => $coverImage
+            ));
 
-            //return $ID;
-
-            # Affected Rows?
-            //echo $stmt->rowCount(); // 1
-            //echo "Success<br/>";
         } catch(PDOException $e) {
             return $progressLog['Fail'] = "Database Write Failed";
             //echo 'progress: ' . $e->getMessage();
