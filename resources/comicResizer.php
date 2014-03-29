@@ -1,11 +1,16 @@
 <?php
 include_once '/home/kidshenlong/Private/login.php';
+//include_once 'logger.php';
+
+//$log = new logger('../logs/resize_log_'.date("Y-m-d").'.txt');
+
 
 if (isset($argv)) {
     parse_str(implode('&', array_slice($argv, 1)), $_GET);
 }
 
-file_put_contents('resizelog.txt', 'made it '.$_GET["path"]);
+//$log->write('Comic Resize Script has been initialised for '.$_GET["path"]);
+
 $db = db_con('pdo','comiccloud');
 
 ini_set('max_execution_time', 300);
@@ -16,18 +21,21 @@ $cmd = "mogrify -resize 1000x $dir/*.jpg";
 //exec($cmd . " > /dev/null &");
 
 exec ($cmd, $output, $return);
-//convert example.png -resize 200◊100 example.png
-// Return will return non-zero upon an error
+
 if (!$return) {
-    //echo "Successfully";
+    //$log->write('Comic Resize Script has successfully resized '.$_GET["path"]);
     $stmt = $db->prepare("UPDATE comics SET finishedProcess=TRUE WHERE location=:param");
-    //$stmt->bindValue(':value', $_GET["path"]);
+
     $stmt->bindValue(':param', $_GET["path"]);
-    $stmt->execute();
-    file_put_contents('resizelog.txt', ' success', FILE_APPEND);
+    if($stmt->execute()){
+        $log->write('Database update for '.$_GET["path"].' complete.');
+    }else{
+        $log->write('Database update for '.$_GET["path"].' failed.');
+    }
+
 
 } else {
-    file_put_contents('resizelog.txt', ' fail', FILE_APPEND);
+    //$log->write('Comic Resize Script has failed to resize '.$_GET["path"]);
     /*echo "Fail not created";
     print_r($return);
     print_r($output);*/

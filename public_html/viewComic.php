@@ -12,7 +12,7 @@
         $script .= "<script type='text/javascript' src='js/reader.js'></script>";
         $content = "<div id='comicMenu'></div><div id='comicFrame'><span id='spaceHelper'></span></div>";
         $comicArray = $viewComic->getComic($_GET['id'],true);
-        $title = $comicArray['seriesName']." (".$comicArray['seriesStartYear'].") - #".$comicArray['issue'];
+        $title = $comicArray['comic_series']." (".$comicArray['comic_start_year'].") - #".$comicArray['comic_issue'];
     }else{
         $content = $comicReturn;
         $title = 'No Comic Found';

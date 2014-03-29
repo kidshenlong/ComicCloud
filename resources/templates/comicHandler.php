@@ -99,18 +99,31 @@ function extractComic($file){
 
                             foreach ($entries as $key=>$entry) {
 
-                                $entry->extract($comicextractpath);
-                                $fullPath = $comicextractpath."/".$entry->getName();
-                                if($key==0){
-                                    $coverImage = $randPath."/".$entry->getName();
+                                $file = $entry->getName();
+                                $fileName = preg_replace("/\.[^.]+$/", "", $file);//basename($file);
+                                $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                $pageNo = (int)substr($fileName,-3,3);
+                                if($ext== 'jpg' || $ext =='jpeg'){
+                                    if(is_numeric($pageNo)){
+                                        $entry->extract(false,$comicextractpath.'/'.$pageNo.'.'.$ext);
+                                    }
                                 }
+
+                                //$fullPath = $comicextractpath."/".$entry->getName();
+                                /*if($key==0){
+                                    $coverImage = $randPath."/".$entry->getName();
+                                }*/
 
 
                             }
 
                             rar_close($x);
 
-                            exec("php -f ../comicResizer.php path=$randPath > /dev/null 2>/dev/null &");
+                            exec("php -f ../comicResizer.php path=$randPath > /dev/null 2>/dev/null &", $output, $return);
+                            if ($return) {
+                                //$log->write('Comic '.$_FILES["file"]["name"].' uploaded.');
+                            }
+
 
                         }catch(Exception $e){
                             $progressLog['Fail'] = "Rar Extraction Failed";
@@ -161,7 +174,7 @@ function extractComic($file){
                 ':id' => $ID,
                 ':title' => $comicTitle,
                 ':issue' => $issueNo,
-                ':cover_image' => $coverImage
+                ':cover_image' => $randPath."/000.jpg"
             ));
 
         } catch(PDOException $e) {
@@ -174,6 +187,17 @@ function extractComic($file){
 
 function unpackArchive ($file){
 
+}
+function is_image($path)
+{
+    $a = getimagesize($path);
+    $image_type = $a[2];
+
+    if(in_array($image_type , array(IMAGETYPE_GIF , IMAGETYPE_JPEG ,IMAGETYPE_PNG , IMAGETYPE_BMP)))
+    {
+        return true;
+    }
+    return false;
 }
 /*$_FILES['field_name']['name']
 $_FILES['field_name']['size']

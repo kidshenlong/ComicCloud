@@ -1,5 +1,6 @@
 <?php
     require('include.php');
+    include_once '../resources/logger.php';
 
     $home = new Page();
 

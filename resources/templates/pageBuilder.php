@@ -49,12 +49,14 @@
                 return $menu;
             }
             public function getSearchResults($search,$offset = 0){
-                global $db;
+                global $db, $userid;
+                $userid = 1;//CHANGE
                 $search = simpleSanitise($search);
                 try {
                     //$stmt = $db->prepare("SELECT * FROM comicSeries WHERE seriesName LIKE :value LIMIT 16 OFFSET :offsetValue");
-                    $stmt = $db->prepare("SELECT comic_series, comic_start_year, comic_cover_image FROM comicsInfo WHERE comic_series LIKE :value GROUP BY comic_series, comic_start_year ORDER BY comic_issue LIMIT 16 OFFSET :offsetValue");
-
+                    //$stmt = $db->prepare("SELECT comic_series, comic_start_year, comic_cover_image FROM comicsInfo WHERE uploader_id = :userid AND comic_series LIKE :value GROUP BY comic_series, comic_start_year ORDER BY comic_issue LIMIT 16 OFFSET :offsetValue");
+                    $stmt = $db->prepare("SELECT a . * , b . * FROM comics AS a INNER JOIN comicsInfo AS b ON a.comic_id = b.comic_id WHERE a.uploader_id = :userid AND b.comic_series LIKE :value GROUP BY b.comic_series, b.comic_start_year ORDER BY b.comic_issue LIMIT 16 OFFSET :offsetValue");
+                    $stmt->bindValue(':userid', $userid);
                     $stmt->bindValue(':value', "%".$search."%");
                     $stmt->bindValue(':offsetValue',intval($offset),PDO::PARAM_INT);
                     $stmt->execute();
@@ -72,13 +74,15 @@
                     return 'ERROR: ' . $e->getMessage();
                 }
             }
-            public function getComicSeries($seriesID, $offset = 0, $asArray = false){
-                global $db;
+            public function getComicSeries($seriesname, $offset = 0, $asArray = false){
+                global $db, $userid;
+                $userid = 1;//CHANGE
                 $seriesID = simpleSanitise($seriesID);
                 try {
                     //$stmt = $db->prepare("SELECT * FROM comics INNER JOIN comicSeries ON  WHERE seriesID = :value ORDER BY issue DESC LIMIT 16 OFFSET :offsetValue");
-                    $stmt = $db->prepare("SELECT a.*, b.* FROM comics AS a INNER JOIN comicSeries AS b ON a.seriesID=b.id");
-                    $stmt->bindValue(':value', intval($seriesID),PDO::PARAM_INT);
+                    //$stmt = $db->prepare("SELECT a.*, b.* FROM comics AS a INNER JOIN comicSeries AS b ON a.seriesID=b.id");
+                    $stmt = $db->prepare("SELECT a . * , b . * FROM comics AS a INNER JOIN comicsInfo AS b ON a.comic_id = b.comic_id WHERE b.comic_series= :value ORDER BY comic_issue DESC LIMIT 16 OFFSET :offsetValue");
+                    $stmt->bindValue(':value', $seriesname);
                     $stmt->bindValue(':offsetValue',intval($offset),PDO::PARAM_INT);
                     $stmt->execute();
                     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -87,8 +91,9 @@
                         if($asArray == true){
                             return $result[0];
                         }
+                        //print_r($result);
                         foreach($result as $element) {
-                            $comicResults .= "<a data-comicid='".$element['id']."' class='comicPreview' href='viewComic.php?id=".$element['id']."'><div class='block card'><img src='".$element['coverimg']."'/><p> #".$element['issue']."</p></div></a>";
+                            $comicResults .= "<a data-comicid='".$element['comic_id']."' class='comicPreview' href='viewComic.php?id=".$element['comic_id']."'><div class='block card'><img src='../comics/extracts/".$element['comic_cover_image']."'/><p> #".$element['comic_issue']."</p></div></a>";
                         }
                         return $comicResults;
                     }else{
@@ -109,7 +114,8 @@
                 try {
 
                     //$stmt = $db->prepare("SELECT * FROM uploads WHERE id = :value");
-                    $stmt = $db->prepare("SELECT a.*,b.issue,c.seriesName,c.seriesStartYear FROM uploads AS a INNER JOIN comics AS b ON a.id=b.locationid INNER JOIN comicSeries AS c ON b.seriesID=c.id WHERE a.id = :value");
+                    //$stmt = $db->prepare("SELECT a.*,b.issue,c.seriesName,c.seriesStartYear FROM uploads AS a INNER JOIN comics AS b ON a.id=b.locationid INNER JOIN comicSeries AS c ON b.seriesID=c.id WHERE a.id = :value");
+                    $stmt = $db->prepare("SELECT a . * , b . * FROM comics AS a INNER JOIN comicsInfo AS b ON a.comic_id = b.comic_id WHERE b.comic_id= :value");
                     $stmt->execute(array(':value' => $comicID));
 
                     //$result = $stmt->fetchAll();
@@ -119,7 +125,7 @@
                         if($asArray == true){
                             return $result;
                         }
-                        $comicDirectory = "../comics/extracts/".$result['uploadlocation'];
+                        $comicDirectory = "../comics/extracts/".$result['location'];
                         if(is_dir($comicDirectory)){
                             $rawFilesArray = array();
                             foreach (scandir($comicDirectory) as $file){
