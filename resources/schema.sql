@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `comics` (
   `location` varchar(255) NOT NULL,
   `finishedProcess` tinyint(1) NOT NULL,
   PRIMARY KEY (`comic_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=57 ;
 
 CREATE TABLE IF NOT EXISTS `comicsInfo` (
   `comic_id` int(11) NOT NULL,
@@ -14,10 +14,11 @@ CREATE TABLE IF NOT EXISTS `comicsInfo` (
   `comic_issue` int(11) DEFAULT NULL,
   `comic_start_year` varchar(255) DEFAULT NULL,
   `comic_cover_image` varchar(255) DEFAULT NULL,
+  `pages` varchar(8000) NOT NULL,
   UNIQUE KEY `comic_id_2` (`comic_id`),
   KEY `comic_id` (`comic_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 ALTER TABLE `comicsInfo`
-ADD CONSTRAINT `comicsInfo_ibfk_1` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`comic_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `comicsInfo_ibfk_1` FOREIGN KEY (`comic_id`) REFERENCES `comics` (`comic_id`) ON DELETE CASCADE ON UPDATE CASCADE;

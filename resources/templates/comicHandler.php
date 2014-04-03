@@ -38,14 +38,20 @@ ini_set('max_execution_time', 300);
 $destination = '../../comics/extracts';
 $userid = 1;
 
+include_once '../logger.php';
+
+$log = new logger('../../logs/upload_log_'.date("Y-m-d").'.txt');
+
 function extractComic($file){
-    global $db,$userid, $destination;
+    global $db,$userid, $destination, $log;
 
     //$extract_path = "rawcomics";  // change this to the correct site path
     //$rawarchive_path = "rawarchives";  // change this to the correct site path
 
 
     $progressLog = array();
+
+    $pages = array();
 
     if(file_exists($file)){
 
@@ -71,7 +77,9 @@ function extractComic($file){
                 }else{
                     //return $progressLog['Fail'] = "Directory already exists";
                     while(is_dir($comicextractpath)){
-                        $comicextractpath = $destination."/".genString();
+                        $randPath = genString();
+                        $comicextractpath = $destination."/".$randPath;
+                        //$comicextractpath = $destination."/".genString();
                     }
                 }
 
@@ -80,8 +88,39 @@ function extractComic($file){
                     $x = $zip->open($file);
                     if($x == true) {
                         try{
-                            $zip->extractTo($comicextractpath); // change this to the correct site path
+
+                            /*$file = $zip->getNameIndex($i);
+                            $trueFile = basename($file);
+                            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                            if($ext== 'jpg' || $ext =='jpeg'){
+                               // $zip->extract(false,$comicextractpath.'/'.$trueFile);
+                                $zip->extractTo($comicextractpath.'/', $trueFile);
+                                $pages[] = $randPath.'/'.$trueFile;
+                            }*/
+                            for ( $i=0; $i < $zip->numFiles; $i++ )
+                            {
+                                $entry = $zip->getNameIndex($i);
+                                if ( substr( $entry, -1 ) == '/' ) continue; // skip directories
+
+                                $fp = $zip->getStream( $entry );
+                                $ext = strtolower(pathinfo($entry, PATHINFO_EXTENSION));
+                                if($ext== 'jpg' || $ext =='jpeg'){
+                                    $ofp = fopen( $comicextractpath.'/'.basename($entry), 'w' );
+                                    $pages[] = $randPath.'/'.basename($entry);
+                                }
+                                if ( ! $fp )
+                                    throw new Exception('Unable to extract the file.');
+
+                                while ( ! feof( $fp ) )
+                                    fwrite( $ofp, fread($fp, 8192) );
+
+                                fclose($fp);
+                                fclose($ofp);
+                            }
                             $zip->close();
+
+                            exec("php -f ../comicResizer.php path=$randPath > /dev/null 2>/dev/null &", $output, $return);
+
                         }catch(Exception $e){
                             $progressLog['Fail'] = "Zip Extraction Failed";
                         }
@@ -97,24 +136,16 @@ function extractComic($file){
                             $entries = rar_list($x);
 
 
+
                             foreach ($entries as $key=>$entry) {
 
                                 $file = $entry->getName();
-                                $fileName = preg_replace("/\.[^.]+$/", "", $file);//basename($file);
+                                $trueFile = basename($file);
                                 $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                                $pageNo = (int)substr($fileName,-3,3);
                                 if($ext== 'jpg' || $ext =='jpeg'){
-                                    if(is_numeric($pageNo)){
-                                        $entry->extract(false,$comicextractpath.'/'.$pageNo.'.'.$ext);
-                                    }
+                                    $entry->extract(false,$comicextractpath.'/'.$trueFile);
+                                    $pages[] = $randPath.'/'.$trueFile;
                                 }
-
-                                //$fullPath = $comicextractpath."/".$entry->getName();
-                                /*if($key==0){
-                                    $coverImage = $randPath."/".$entry->getName();
-                                }*/
-
-
                             }
 
                             rar_close($x);
@@ -169,16 +200,18 @@ function extractComic($file){
             $issueNo = str_replace('#', '',$output_array[0]);
             $issueNo = ltrim($issueNo, '0');
 
-            $stmt = $db->prepare('INSERT INTO comicsInfo VALUES(:id,:title,:issue,NULL,:cover_image)');
+            $stmt = $db->prepare('INSERT INTO comicsInfo VALUES(:id,:title,:issue,NULL,:cover_image,:pages)');
             $stmt->execute(array(
                 ':id' => $ID,
                 ':title' => $comicTitle,
                 ':issue' => $issueNo,
-                ':cover_image' => $randPath."/000.jpg"
+                ':cover_image' => $pages[0],
+                ':pages' => json_encode($pages)
             ));
 
         } catch(PDOException $e) {
             return $progressLog['Fail'] = "Database Write Failed";
+            $log->write("Database write fail... ".print_r($e));
             //echo 'progress: ' . $e->getMessage();
         }
     }
