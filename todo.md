@@ -12,3 +12,4 @@
 - [ ] Last page options
 - [ ] Optimise resize script. Should probably run in the background and become available for the user when complete.
 - [ ] REFACTOR INCLUDE SCRIPTS PLEASE. OH THE HUMANITY.
+- [ ] Don't forget to add vertical algin top to CSS of blocks 
